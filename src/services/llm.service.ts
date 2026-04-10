@@ -25,7 +25,7 @@ export const generateSchedule = async (userPrompt: string) => {
         },
       ],
     });
-
+// @ts-ignore
     const text = completion.choices[0].message.content;
 
     return text;
