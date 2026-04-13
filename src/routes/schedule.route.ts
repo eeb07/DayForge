@@ -6,3 +6,5 @@ const router = express.Router();
 router.post("/schedule",generateSchedulerController)
 
 export default router;
+
+
