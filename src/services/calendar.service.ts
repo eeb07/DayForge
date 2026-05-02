@@ -1,29 +1,29 @@
 import dotenv from "dotenv";
-import {google} from "googleapis";
+import { google } from "googleapis";
 import type { Task } from "../utils/logger.js";
 
 dotenv.config();
 
- export const createCalanderEvents = async(
+export const createCalanderEvents = async (
     tasks: Task[],
     tokens: {
         access_token: string;
         refresh_token: string;
     }
- )=>{
-    try{
+) => {
+    try {
         // create OAuth
 
         const oauth2Client = new google.auth.OAuth2(
-            process.env.GOOGLE_CLIENT_ID, 
-            process.env.GOOGLE_CLIENT_SECRET, 
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
             process.env.GOOGLE_REDIRECT_UTI
         );
 
         // SET USER TOKEN 
 
         oauth2Client.setCredentials({
-            access_token: tokens.access_token, 
+            access_token: tokens.access_token,
             refresh_token: tokens.refresh_token,
 
         });
@@ -32,7 +32,7 @@ dotenv.config();
 
         const calendar = google.calendar({
 
-            version: "v3", 
+            version: "v3",
             auth: oauth2Client,
 
         });
@@ -43,43 +43,43 @@ dotenv.config();
         const year = now.getFullYear();
         const day = String(now.getDate()).padStart(2, "0");
         const month = String(now.getMonth() + 1).padStart(2, "0");
-        
+
         const today = `${year}-${month}-${day}`;
 
         // loop through tasks
 
-        for(const t of tasks){
-            if(!t.start_time) continue; // skips the tasks without time
+        for (const t of tasks) {
+            if (!t.start_time) continue; // skips the tasks without time
 
             // create start datetime 
             const startDateTime = new Date(`${todayDate}T${t.start_time}:00`);
 
             // calculate end datetime 
-           
+
             const endDateTime = new Date(
                 startDateTime.getTime() + t.duration_minutes * 60000
             );
 
             // create event 
             await calendar.events.insert({
-                calendarId: "primary", 
+                calendarId: "primary",
                 requestBody: {
-                    summary: t.task, 
+                    summary: t.task,
                     description: `Category: ${t.category}`,
                     start: {
                         dateTime: startDateTime.toISOString(),
-                        timeZone: "Asia/Kolkata", 
+                        timeZone: "Asia/Kolkata",
 
                     },
                     end: {
                         dateTime: endDateTime.toISOString(),
-                        timeZone: "Asia/Kolkata", 
+                        timeZone: "Asia/Kolkata",
                     },
-                    reminders:{
-                        useDefault: false, 
+                    reminders: {
+                        useDefault: false,
                         overrides: [
                             {
-                                method:"popup", minutes: 10
+                                method: "popup", minutes: 10
                             },
                         ],
                     },
@@ -87,12 +87,12 @@ dotenv.config();
             });
             console.log(`Event created: ${t.task}`);
         }
-        return {success: true};
+        return { success: true };
 
-    }catch(error){
+    } catch (error) {
         console.error("Calendar Error:", error);
         throw new Error("Failed to create calendar events");
 
     }
- };
+};
 

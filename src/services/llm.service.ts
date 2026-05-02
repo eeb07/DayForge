@@ -34,3 +34,8 @@ export const generateSchedule = async (userPrompt: string) => {
     throw new Error("Failed to generate schedule");
   }
 };
+
+
+
+
+

@@ -21,6 +21,7 @@ const oauth2Client = new google.auth.OAuth2(
 authrouter.get("/google", (req, res)=>{
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: "offline", 
+        include_granted_scopes: false,
         scope:["https://www.googleapis.com/auth/calendar"],
     });
 
