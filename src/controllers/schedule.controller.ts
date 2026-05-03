@@ -17,7 +17,7 @@ export const generateSchedulerController= async(req: Request, res: Response)=>{
 
         // call Ai service 
 
-        const aiResponse = await generateSchedule(prompt);
+        const aiResponse = await generateSchedule(prompt );
         let parsed;
 
         if(!aiResponse){
